@@ -1,0 +1,10 @@
+IF(CMAKE_COMPILER_IS_GNUCC)
+  # Enable all warnings
+  ADD_DEFINITIONS(-Wall)
+
+  # Allow relocation
+  ADD_DEFINITIONS(-fPIC)
+
+  ADD_DEFINITIONS(-std=c++11)
+
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
