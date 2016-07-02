@@ -8,24 +8,19 @@
 //------------------------------------------------------------------------------
 #include "Display.hpp"
 
+#include <LunarSurfaceGenerator.hpp>
+
 #include <iostream>
-#include <thread>
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-Display::Display(unsigned width, unsigned height)
-  : mWidth(width),
-    mHeight(height),
+Display::Display(unsigned Width, unsigned Height)
+  : mWidth(Width),
+    mHeight(Height),
     mWindow(sf::VideoMode(mWidth, mHeight), "Lunar Lander"),
-    mTexture(),
-    mSprite()
+    mLunarSurface(MoonGenerator::GenerateLunarSurface(mWidth, mHeight)),
+    mLander(mWidth, mHeight, mLunarSurface)
 {
-  if (!mTexture.loadFromFile("/home/dloman/Source/LunarLander/static/images/lander.png"))
-  {
-    DisplayErrorAndExit("Couldn't load texture");
-  }
-  mSprite.setTexture(mTexture);
-  mSprite.setPosition(sf::Vector2f(0, mHeight / 2));
   mWindow.setVerticalSyncEnabled(true);
   mWindow.clear(sf::Color::Black);
   mWindow.display();
@@ -37,7 +32,9 @@ void Display::Update()
 {
   mWindow.clear(sf::Color::Black);
 
-  mWindow.draw(mSprite);
+  mLander.Update(mWindow);
+
+  mWindow.draw(mLunarSurface);
 
   sf::Event Event;
   mWindow.pollEvent(Event);
@@ -48,16 +45,6 @@ void Display::Update()
     exit(0);
   }
   mWindow.display();
-
-  auto Position = mSprite.getPosition();
-
-  Position.x += 5;
-  if (Position.x >= mWidth)
-  {
-    Position.x = 0;
-  }
-
-  mSprite.setPosition(Position);
 }
 
 //------------------------------------------------------------------------------

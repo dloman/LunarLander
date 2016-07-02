@@ -24,9 +24,13 @@ set(CMAKE_DEBUG_POSTFIX d)
 
 add_executable(
   LunarLander
-  src/LunarLander.cpp
   src/Display.cpp
   src/Display.hpp
+  src/LunarLander.cpp
+  src/Lander.cpp
+  src/Lander.hpp
+  src/LunarSurfaceGenerator.cpp
+  src/LunarSurfaceGenerator.hpp
   )
 
 target_link_libraries(

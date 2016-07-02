@@ -45,11 +45,15 @@ sf::VertexArray GenerateLunarSurface(
     {
       if (Random())
       {
-        Height += 7;
+        Height += 18;
       }
       else
       {
-        Height -= 7;
+        Height -= 18;
+      }
+      if (Height <= 0)
+      {
+        Height = 1;
       }
     }
     Lines.append(sf::Vector2f(Width, Height));

@@ -7,10 +7,11 @@
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
+#include <Lander.hpp>
+
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 
 #include <chrono>
 #include <string>
@@ -21,7 +22,7 @@ class Display
 {
   public:
 
-    Display(unsigned width, unsigned height);
+    Display(unsigned Width, unsigned Height);
 
     ~Display() = default;
 
@@ -45,9 +46,8 @@ class Display
 
     sf::RenderWindow mWindow;
 
-    sf::Texture mTexture;
+    sf::VertexArray mLunarSurface;
 
-    sf::Sprite mSprite;
-
+    Lander mLander;
 };
 

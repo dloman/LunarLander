@@ -15,7 +15,7 @@
 //------------------------------------------------------------------------------
 int main()
 {
-  Display display(600, 400);
+  Display display(1200, 900);
   while (display.IsClosed())
   {
     display.Update();
