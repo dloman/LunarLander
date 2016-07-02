@@ -8,93 +8,56 @@
 //------------------------------------------------------------------------------
 #include "Display.hpp"
 
-#include <SDL.h>
 #include <iostream>
-//#include <stdio.h>
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-Display::Display()
-  : mpWindow(nullptr),
-    mpScreenSurface(nullptr),
-    mWidth(400),
-    mHeight(600),
-    mLastUpdate(std::chrono::system_clock::now()),
-    mColor(0x00)
-{
-  InitializeDisplay();
-}
+#include <thread>
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 Display::Display(unsigned width, unsigned height)
-  : mpWindow(nullptr),
-    mpScreenSurface(nullptr),
-    mWidth(width),
+  : mWidth(width),
     mHeight(height),
-    mLastUpdate(std::chrono::system_clock::now()),
-    mColor(0x00)
+    mWindow(sf::VideoMode(mWidth, mHeight), "Lunar Lander"),
+    mTexture(),
+    mSprite()
 {
-  InitializeDisplay();
-}
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-Display::~Display()
-{
-  SDL_DestroyWindow(mpWindow );
-  SDL_Quit();
-}
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-void Display::InitializeDisplay()
-{
-  if(SDL_Init(SDL_INIT_VIDEO) < 0)
+  if (!mTexture.loadFromFile("/home/dloman/Source/LunarLander/static/images/lander.png"))
   {
-    DisplayErrorAndExit("sdl couldn't be initialized");
+    DisplayErrorAndExit("Couldn't load texture");
   }
-  mpWindow = SDL_CreateWindow(
-    "Lunar Lander",
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    mWidth,
-    mHeight,
-    SDL_WINDOW_SHOWN);
-  if(!mpWindow)
-  {
-    DisplayErrorAndExit("Window could not be created!");
-  }
-
-  mpScreenSurface = SDL_GetWindowSurface(mpWindow);
+  mSprite.setTexture(mTexture);
+  mSprite.setPosition(sf::Vector2f(0, mHeight / 2));
+  mWindow.setVerticalSyncEnabled(true);
+  mWindow.clear(sf::Color::Black);
+  mWindow.display();
 }
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 void Display::Update()
 {
-  using namespace std::chrono;
+  mWindow.clear(sf::Color::Black);
 
-  if (system_clock::now()- mLastUpdate > milliseconds(500))
+  mWindow.draw(mSprite);
+
+  sf::Event Event;
+  mWindow.pollEvent(Event);
+
+  if (Event.type == sf::Event::Closed)
   {
-    if (mColor == 0xFF)
-    {
-      mColor = 0x00;
-    }
-    else
-    {
-      mColor = 0xFF;
-    }
-    mLastUpdate = system_clock::now();
+    mWindow.close();
+    exit(0);
+  }
+  mWindow.display();
+
+  auto Position = mSprite.getPosition();
+
+  Position.x += 5;
+  if (Position.x >= mWidth)
+  {
+    Position.x = 0;
   }
 
-    SDL_FillRect(
-      mpScreenSurface,
-      nullptr,
-      SDL_MapRGB(mpScreenSurface->format, mColor, mColor, mColor));
-
-     SDL_UpdateWindowSurface(mpWindow);
-     SDL_Delay(2000);
+  mSprite.setPosition(Position);
 }
 
 //------------------------------------------------------------------------------
@@ -103,4 +66,11 @@ void Display::DisplayErrorAndExit(const std::string& ErrorString) const
 {
   std::cerr << "ERROR: " << ErrorString << std::endl;
   exit(1);
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+bool Display::IsClosed() const
+{
+  return mWindow.isOpen();
 }

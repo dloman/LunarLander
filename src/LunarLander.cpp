@@ -15,8 +15,8 @@
 //------------------------------------------------------------------------------
 int main()
 {
-  Display display;
-  for (auto i = 0u; i < 100000; ++i)
+  Display display(600, 400);
+  while (display.IsClosed())
   {
     display.Update();
   }

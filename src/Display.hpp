@@ -7,22 +7,23 @@
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-class SDL_Window;
-class SDL_Surface;
+#include <SFML/Window.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include <chrono>
 #include <string>
+
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 class Display
 {
   public:
 
-    Display();
-
     Display(unsigned width, unsigned height);
 
-    ~Display();
+    ~Display() = default;
 
     Display(const Display& other) = delete;
 
@@ -30,26 +31,23 @@ class Display
 
     void Update();
 
-  private:
+    bool IsClosed() const;
 
-    void InitializeDisplay();
+  private:
 
     void DisplayErrorAndExit(const std::string& ErrorString) const;
 
   private:
 
-    SDL_Window* mpWindow;
-
-    SDL_Surface* mpScreenSurface;
-
     unsigned mWidth;
 
     unsigned mHeight;
 
-    std::chrono::time_point<
-      std::chrono::system_clock,
-      std::chrono::duration<double>> mLastUpdate;
+    sf::RenderWindow mWindow;
 
-    uint8_t mColor;
+    sf::Texture mTexture;
+
+    sf::Sprite mSprite;
+
 };
 

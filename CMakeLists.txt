@@ -14,9 +14,9 @@ option(USE_CXX11 "Use C++11" ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package(SDL2 REQUIRED)
+find_package(SFML 2 COMPONENTS system window graphics REQUIRED)
 
-include_directories(${SDL2_INCLUDE_DIR})
+include_directories(${SFML_INCLUDE_DIR})
 
 include_directories(src)
 
@@ -31,5 +31,5 @@ add_executable(
 
 target_link_libraries(
   LunarLander
-  ${SDL2_LIBRARY}
+  ${SFML_LIBRARIES}
   )
