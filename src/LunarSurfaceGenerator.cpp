@@ -21,7 +21,7 @@ sf::VertexArray GenerateLunarSurface(
   const unsigned WindowWidth,
   const unsigned WindowHeight)
 {
-  sf::VertexArray Lines(sf::LinesStrip, WindowWidth);
+  sf::VertexArray Lines(sf::LinesStrip, 0);
 
   auto LandingSpots = GenerateLandingSpots(4, WindowWidth);
 
@@ -58,7 +58,6 @@ sf::VertexArray GenerateLunarSurface(
     }
     Lines.append(sf::Vector2f(Width, Height));
   }
-
   return Lines;
 }
 

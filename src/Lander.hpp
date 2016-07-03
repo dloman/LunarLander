@@ -8,7 +8,9 @@
 //------------------------------------------------------------------------------
 
 #include <SFML/Window.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
 #include <chrono>
@@ -66,8 +68,14 @@ class Lander
     sf::Vector2f mVelocity;
 
     const sf::Vector2f mGravity;
+
     sf::Vector2f mAcceleration;
 
+    bool mCrashed;
+
+    sf::Font mFont;
+
+    sf::Text mMessage;
 
 };
 

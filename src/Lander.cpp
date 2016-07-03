@@ -28,7 +28,10 @@ Lander::Lander(unsigned Width, unsigned Height, sf::VertexArray& LunarSurface)
     mPosition(0, 1),
     mVelocity(.7, .7),
     mGravity(0.0, 0.005),
-    mAcceleration(mGravity)
+    mAcceleration(mGravity),
+    mCrashed(false),
+    mFont(),
+    mMessage()
 {
   if (
     !mTexture.loadFromFile(
@@ -46,12 +49,27 @@ Lander::Lander(unsigned Width, unsigned Height, sf::VertexArray& LunarSurface)
   mSprite.setOrigin(sf::Vector2f(Size.width / 2, Size.height / 2));
   mPosition.y += Size.height / 2;
   mSprite.setPosition(mPosition);
+
+  if (!mFont.loadFromFile("/usr/share/fonts/truetype/msttcorefonts/arial.ttf"))
+  {
+    std::cerr << "ERROR: Font not loading " << std::endl;
+  }
+
+  mMessage.setFont(mFont);
+  mMessage.setCharacterSize(55);
+  mMessage.setColor(sf::Color::White);
+  mMessage.setStyle(sf::Text::Bold);
 }
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 void Lander::UpdatePhysics()
 {
+  if (mCrashed)
+  {
+    return;
+  }
+
   mVelocity += mAcceleration;
   mPosition += mVelocity;
   if (mPosition.x >= mWindowWidth|| mPosition.y > mWindowHeight)
@@ -68,13 +86,21 @@ void Lander::UpdatePhysics()
 //------------------------------------------------------------------------------
 bool Lander::HasCollidedWithGround() const
 {
-  return false;
-  //auto BoundingBox = mSprite.getGlobalBounds();
-  //return std::any_of(
-  //mLunarSurface.begin(),
-  //mLunarSurface.end(),
-  //[&BoundingBox] (sf::Vertex& Vertex) { return BoundingBox.contains(Vertex); });
+  auto BoundingBox = mSprite.getGlobalBounds();
 
+  auto HasCollided = [&BoundingBox] (sf::Vertex& Vertex)
+  {
+    return BoundingBox.contains(Vertex.position);
+  };
+
+  for (size_t i = 0u; i < mLunarSurface.getVertexCount(); ++i)
+  {
+    if (HasCollided(mLunarSurface[i]))
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 //------------------------------------------------------------------------------
@@ -101,7 +127,28 @@ void Lander::Update(sf::RenderWindow& Window)
     mAcceleration = mGravity;
   }
   UpdatePhysics();
-  if (HasCollidedWithGround());
+
+  if (HasCollidedWithGround())
+  {
+    auto Rotation = mSprite.getRotation();
+
+    if ((Rotation < 10 || Rotation > 355) &&
+      mVelocity.x < .7 && mVelocity.y < .7)
+    {
+      mMessage.setString("Succseful Landing!!");
+    }
+    else
+    {
+      mMessage.setString("You crashed and died horribly");
+    }
+
+    mCrashed = true;
+  }
   Window.draw(mSprite);
+
+  if (mCrashed)
+  {
+    Window.draw(mMessage);
+  }
 }
 
